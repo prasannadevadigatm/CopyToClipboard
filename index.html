@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Copy to Clipboard Directive</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+        .container{
+            margin-top:20px;
+        }
+        .copyToClipboardBtn{
+        	margin-top: -6px;
+        }
+        
+    </style>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body ng-app="myApp" ng-controller="myCtrl">
+	<div class="container">
+		<h4 class="text-center">Angular Custom Copy to Clipboard Directive</h4>
+		<div class="col-sm-6">
+			<div class="panel panel-default">
+            	<div class="panel-heading">
+            		<h4 class="panel-title">Enter Text</h4>
+            	</div>
+            	<div class="panel-body">
+            		<form class="form" ng-submit="saveText(data)">
+                        <div class="form-group">
+                            <textarea row="100" class="form-control" ng-model="data.text" style="min-height:100px;max-height:100px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btnRound">Submit</button>
+                        </div>
+                    </form>
+            	</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="panel panel-default">
+            	<div class="panel-heading">
+            		<h4 class="panel-title">Output Text <a  copy-to-clipboard text-to-copy="data.savedText" class="btn btn-sm btn-default copyToClipboardBtn pull-right">Copy text</a></h4>
+            	</div>
+            	<div class="panel-body">
+            		<div style="min-height:163px;max-height:163px;">{{data.savedText}}</div>
+            	</div>
+			</div>
+		</div>
+	</div>
+    
+    <script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+        $scope.data = {
+        	text: '',
+        	savedText: ''
+        };
+
+        $scope.saveText = function(data){
+            $scope.data.savedText = data.text;
+            data.text = '';
+        }
+    });
+    app.directive("copyToClipboard", function($compile) {
+        return {
+            restrict: "A",
+            scope: {
+                textToCopy:'='
+            },
+        
+            link: function(scope, elem, attrs) {
+                elem.on('click',function () {
+		            if (scope.textToCopy) {
+		                var $temp_input = $("<input>");
+		                $("body").append($temp_input);
+		                $temp_input.val(scope.textToCopy).select();
+		                document.execCommand("copy");
+		                $temp_input.remove();
+		            }
+		        });
+            }
+        };
+    });
+    </script>
+</body>
+
+</html>
